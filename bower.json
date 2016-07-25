@@ -1,0 +1,23 @@
+{
+  "name": "cmacc-elements",
+  "version": "1.1.0",
+  "main": "cmacc-app.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0",
+    "paper-elements": "PolymerElements/paper-elements#~1.0.7",
+    "iron-elements": "PolymerElements/iron-elements#~1.0.10",
+    "app-layout": "PolymerElements/app-layout#~0.10.1"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "*"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "../",
+    "test",
+    "tests"
+  ]
+}
