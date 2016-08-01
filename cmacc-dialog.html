@@ -1,5 +1,5 @@
 <!-- Imports polymer -->
-<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../olymer/polymer.html">
 
 <link rel="import" href="./cmacc-ast.html">
 <link rel="import" href="./cmacc-sidebar.html">
@@ -11,16 +11,38 @@
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../paper-button/paper-button.html">
 
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+
 <dom-module id="cmacc-dialog">
-    <style>
+
+    <style is="custom-style" include="iron-flex iron-flex-alignment">
+
+        <
+        style >
         paper-dialog {
             width: 800px;
+            height: 500px;
+            overflow: auto;
         }
     </style>
     <template>
         <paper-dialog id="dialog">
-            <h2>{{ref}}</h2>
-            <paper-input label="{{ref}}" value="{{val}}"></paper-input>
+            <template is="dom-if" if="{{variable.variables}}">
+                <h2>{{variable.key}}</h2>
+                <template is="dom-repeat" items="{{variable.variables}}">
+                    <div class="flex layout horizontal">
+                        <paper-input label="{{item.key}}" value="{{item.val::input}}" disabled="{{item.over}}"
+                                     on-input="change"></paper-input>
+                        <paper-button on-tap="overwrite">Overwrite</paper-button>
+                    </div>
+                </template>
+            </template>
+            <template is="dom-if" if="{{!variable.variables}}">
+                <div class="flex layout horizontal">
+                    <paper-input label="{{variable.key}}" value="{{variable.val}}" on-input="change" disabled="{{variable.over}}"></paper-input>
+                    <paper-button on-tap="overwrite">Overwrite</paper-button>
+                </div>
+            </template>
             <paper-button on-tap="save">Save</paper-button>
         </paper-dialog>
     </template>
@@ -40,19 +62,50 @@
             val: String
         },
 
-        open: function(ref){
-            this.variable = ast.find(ref);
-            this.val = this.variable.val;
-            this.$.dialog.open();
+        listeners: {
+            'cmacc-dialog': 'open'
         },
 
-        save: function(){
-            console.log(this.variable.loc, this.val);
-            ast.change(this.variable.loc, this.val);
+        ready: function () {
+            document.addEventListener('cmacc-dialog', function (e) {
+                var variable = e.detail;
+                this.open(variable);
+            }.bind(this));
+        },
+
+        change: function (e) {
+            if (e.model.item)
+                e.model.item.over = true;
+            else
+                this.variable.over = true;
+        },
+
+        overwrite: function (e) {
+            if (e.model.item) {
+                var variable = e.model.item;
+                console.log(e.model.index)
+                variable.over = !!!variable.over;
+                this.set('variable.variables.' + e.model.index + '.over', variable.over)
+            }
+            else {
+                this.variable.over = !!!this.variable.over;
+                this.set('variable.over', this.variable.over)
+            }
+
+        },
+
+        open: function (variable) {
+            this.variable = variable;
+            this.$.dialog.open();
+
+        },
+
+        save: function () {
+            this.fire('cmacc-changed');
             this.$.dialog.close();
         },
 
-        close: function(){
+        close: function () {
             this.$.dialog.close();
         }
 

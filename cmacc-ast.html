@@ -5,10 +5,30 @@
 
 <dom-module id="cmacc-ast">
 
+    <template>
+
+        <iron-ajax
+                id="ajax"
+                url="{{file}}"
+                method="POST"
+                content-type="text/plain"
+                on-response="handleResponse"
+                debounce-duration="300"></iron-ajax>
+
+        <paper-toast id="toast" text="Saved succesfull"></paper-toast>
+
+    </template>
+
 </dom-module>
 
 
 <script>
+
+    var state = {
+        file: null,
+        ast: null
+    }
+
     Polymer({
         is: 'cmacc-ast',
 
@@ -23,13 +43,25 @@
             }
         },
 
-        attached: function () {
-
+        ready: function () {
+            console.log(state)
+            if (state.file)
+                this.file = state.file;
+            if (state.ast)
+                this.ast = state.ast;
         },
 
-        compose: function(){
-            window.cmacc.compose(this.file, null, function (err, ast) {
-                console.log(ast)
+        compose: function (file) {
+            state.file = file;
+            window.cmacc.compose(file, null, function (err, ast) {
+                state.ast = ast;
+                this.ast = ast;
+            }.bind(this))
+        },
+
+        parse: function (source) {
+            window.cmacc.compose(source, null, function (err, ast) {
+                state.ast = ast;
                 this.ast = ast;
             }.bind(this))
         },
@@ -42,7 +74,19 @@
             var ast = window.cmacc.helper.queryAst(this.ast, key);
             ast.val = value;
             this.fire('iron-signal', {name: 'cmacc-ast', data: this.ast});
-        }
 
-    });
+
+        },
+
+        save: function () {
+            cmacc.serialize(state.ast, function (err, text) {
+                this.$.ajax.body = text;
+                this.$.ajax.generateRequest()
+            }.bind(this))
+        },
+
+        handleResponse: function () {
+            this.$.toast.open();
+        }
+    })
 </script>

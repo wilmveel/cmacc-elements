@@ -1,5 +1,5 @@
 <!-- Imports polymer -->
-<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../polymer/polymer.html">
 
 <link rel="import" href="./cmacc-ast.html">
 <link rel="import" href="./cmacc-sidebar.html">
@@ -10,13 +10,9 @@
 <link rel="import" href="../paper-dialog/paper-dialog.html">
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-toast/paper-toast.html">
 
 <dom-module id="cmacc-document">
-    <style>
-        paper-dialog {
-            width: 800px;
-        }
-    </style>
     <template>
         <iron-signals on-iron-signal-cmacc-ast="refresh"></iron-signals>
         <div id="content"></div>
@@ -37,9 +33,9 @@
             }
         },
 
-        attached: function () {
-            this.addEventListener('ast-changed', function (e) {
-                console.log('changedchangedchangedchangedchanged');
+        ready: function () {
+            document.addEventListener('cmacc-changed', function (e) {
+                console.log('Render')
                 this.refresh()
             }.bind(this))
         },
@@ -52,7 +48,7 @@
         },
 
         save: function () {
-            this.cmacc.change(this.ref, this.val)
+            //this.cmacc.change(this.ref, this.val)
             this.$.dialog.close();
         }
 

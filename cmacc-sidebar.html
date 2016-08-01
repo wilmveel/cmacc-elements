@@ -6,20 +6,25 @@
 <link rel="import" href="../paper-item/paper-item.html">
 
 <dom-module id="cmacc-sidebar">
+    <style>
+        .add {
+            width: 100%;
+            text-align: center;
+        }
+    </style>
     <template>
         <iron-signals on-iron-signal-cmacc-ast="refresh"></iron-signals>
         <div>
             <template id="rep" is="dom-repeat" items="{{list(ast)}}" observer="{{ast}}">
-                <paper-item on-mouseover='overSection' on-mouseout='outSection' on-tap="clickSection">
+                <paper-item on-mouseover='over' on-mouseout='out' on-tap="click">
                     <paper-item-body two-line>
                         <div>{{item.key}}</div>
                     </paper-item-body>
                 </paper-item>
-                <!--template   is="dom-repeat" items="{{list(item)}}">
-                    <paper-item on-mouseover='overVariable' on-mouseout='outVariable' on-tap="clickVariable">{{item.key}} : {{item.val}}</paper-item>
-                </template-->
             </template>
+
         </div>
+        <paper-button class="add" raised on-tap="add">Add</paper-button>
     </template>
 </dom-module>
 
@@ -45,33 +50,24 @@
             return ast.variables
         },
 
-        overVariable: function (e) {
-            var item = e.model.item;
-            this.fire('iron-signal', {name: 'cmacc-variable', data: item.loc})
+        add: function () {
+            this.fire('cmacc-dialog', {})
         },
 
-        outVariable: function () {
-            this.fire('iron-signal', {name: 'cmacc-variable', data: null})
-        },
-
-        clickVariable: function (e) {
-            var item = e.model.item;
-            this.fire('cmacc-variable', {name: 'ref', data: item.loc})
-        },
-
-        overSection: function (e) {
+        over: function (e) {
             var item = e.model.item;
             console.log('over', item)
             this.fire('iron-signal', {name: 'cmacc-section', data: item.file})
         },
 
-        outSection: function () {
+        out: function () {
             this.fire('iron-signal', {name: 'cmacc-section', data: null})
         },
 
-        clickSection: function (e) {
+        click: function (e) {
             var item = e.model.item;
-            this.fire('cmacc-section', {name: 'ref', data: item.loc})
+            this.fire('cmacc-dialog', item)
+            this.fire('cmacc-section', item)
         }
 
     });
