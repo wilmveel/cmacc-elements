@@ -74,15 +74,6 @@
             var ast = window.cmacc.helper.queryAst(this.ast, key);
             ast.val = value;
             this.fire('iron-signal', {name: 'cmacc-ast', data: this.ast});
-
-
-        },
-
-        save: function () {
-            cmacc.serialize(state.ast, function (err, text) {
-                this.$.ajax.body = text;
-                this.$.ajax.generateRequest()
-            }.bind(this))
         },
 
         handleResponse: function () {

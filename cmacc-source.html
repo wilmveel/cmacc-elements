@@ -16,9 +16,7 @@
 
         <cmacc-ast id="ast" ast="{{ast}}"></cmacc-ast>
 
-        <paper-textarea label="Source" value="{{source}}"></paper-textarea>
-        <paper-button align="right" on-tap="save">Save</paper-button>
-        <paper-toast id="toast" text="Saved succesfull"></paper-toast>
+        <paper-textarea label="Source" value="{{source}}" on-input="save"></paper-textarea>
 
     </template>
 </dom-module>
@@ -50,9 +48,8 @@
         },
 
         save: function () {
-            this.$.ast.parse(this.source);
-            this.$.ast.save();
-
+            console.log('SAVE');
+            //this.$.ast.parse(this.source);
         }
 
     });
