@@ -1,0 +1,98 @@
+<!-- Imports polymer -->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-signals/iron-signals.html">
+
+<link rel="import" href="../paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../paper-item/paper-item.html">
+
+<dom-module id="cmacc-files">
+
+    <style>
+        app-toolbar {
+            background-color: #4285f4;
+            color: #fff;
+        }
+    </style>
+    <template>
+        <app-toolbar>
+            <paper-icon-button icon="arrow-back" on-tap="up"></paper-icon-button>
+            <div>{{path(pointer)}}</div>
+        </app-toolbar>
+
+        <template id="rep" is="dom-repeat" items="{{list(tree,pointer)}}">
+            <paper-item on-tap="down">
+                <paper-item-body two-line>
+                    <div>{{item}}</div>
+                </paper-item-body>
+            </paper-item>
+        </template>
+    </template>
+
+</dom-module>
+
+
+<script>
+    Polymer({
+
+        is: 'cmacc-files',
+
+        properties: {
+            files: {
+                type: Array,
+                observer: 'refresh'
+            }
+        },
+
+        refresh: function () {
+            var tree = {};
+            this.pointer = [];
+            this.files.forEach(function (file) {
+                var current = tree;
+                file.split('/').forEach(function (token) {
+                    if (!current[token]) {
+                        current[token] = {}
+                    }
+                    current = current[token]
+                })
+            });
+            this.set('tree', tree);
+        },
+
+        down: function (e) {
+            var point = e.model.item;
+            var pointer = this.pointer.slice();
+            pointer.push(point)
+
+            var list = this.list(this.tree, pointer);
+            if (list.length > 0) {
+                this.set('pointer', pointer);
+            } else {
+                this.fire('cmacc-select-file', this.path(pointer));
+            }
+        },
+
+        up: function (e) {
+            this.set('pointer', this.pointer.slice(0, (this.pointer.length - 1)));
+        },
+
+        list: function (tree, pointer) {
+            var res = [];
+            var current = tree;
+
+            pointer.forEach(function (i) {
+                current = current[i]
+            });
+
+            Object.keys(current).forEach(function (item) {
+                res.push(item)
+            });
+
+            return res;
+        },
+
+        path: function (pointer) {
+            return pointer.join('/');
+        }
+
+    });
+</script>
