@@ -131,6 +131,9 @@
             },
             files: {
                 type: Array
+            },
+            host: {
+                type:String
             }
         },
 
@@ -172,7 +175,7 @@
         },
 
         load: function(urlString){
-            var root = location.protocol + "//" + location.host;
+            var root = location.protocol + "//" + this.host;
             var url = new URL(urlString, root);
             this.file = url.href;
         },
