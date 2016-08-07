@@ -127,7 +127,8 @@
 
         properties: {
             ast: {
-                type: Object
+                type: Object,
+                observer:'refresh'
             },
             files: {
                 type: Array
@@ -166,7 +167,11 @@
         },
 
         save: function () {
-            this.$.ast.save();
+            if(location.host === ""){
+                this.fire('electron-save')
+            } else {
+                this.$.ast.save();
+            }
         },
 
         go: function (e) {
@@ -189,6 +194,11 @@
             if (!results) return null;
             if (!results[2]) return '';
             return decodeURIComponent(results[2].replace(/\+/g, " "));
+        },
+        refresh:function(){
+            if(location.host === ""){
+                this.fire('electron-changed-ast', this.ast)
+            }
         }
 
     });
