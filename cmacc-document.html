@@ -45,6 +45,8 @@
             window.cmacc.render(this.ast, function (err, markdown) {
                 this.$.content.innerHTML = window.cmacc.marked(markdown);
             }.bind(this), true)
+
+            this.fire('cmacc-ast-update', this.ast)
         },
 
         save: function () {
