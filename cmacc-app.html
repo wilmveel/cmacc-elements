@@ -22,6 +22,7 @@
 <link rel="import" href="./cmacc-files.html">
 <link rel="import" href="./cmacc-document.html">
 <link rel="import" href="./cmacc-source.html">
+<link rel="import" href="./cmacc-edit.html">
 <link rel="import" href="./cmacc-sidebar.html">
 <link rel="import" href="./cmacc-dialog.html">
 
@@ -95,6 +96,7 @@
             <paper-tabs selected="{{page}}">
                 <paper-tab>Document</paper-tab>
                 <paper-tab>Source</paper-tab>
+                <paper-tab>Edit</paper-tab>
             </paper-tabs>
 
             <div id="container">
@@ -108,6 +110,10 @@
 
                             <paper-material elevation="1">
                                 <cmacc-source ast="{{ast}}"></cmacc-source>
+                            </paper-material>
+
+                            <paper-material elevation="1">
+                                <cmacc-edit ast="{{ast}}"></cmacc-edit>
                             </paper-material>
 
                         </iron-pages>
@@ -127,10 +133,14 @@
 
         properties: {
             ast: {
-                type: Object
+                type: Object,
+                notify: true
             },
             files: {
                 type: Array
+            },
+            base: {
+                type: String
             }
         },
 
@@ -172,8 +182,8 @@
         },
 
         load: function(urlString){
-            var root = location.protocol + "//" + location.host;
-            var url = new URL(urlString, root);
+            var url = new URL(urlString, this.base);
+            console.log(url);
             this.file = url.href;
         },
 

@@ -3,32 +3,37 @@
 <link rel="import" href="../iron-signals/iron-signals.html">
 <link rel="import" href="../paper-tooltip/paper-tooltip.html">
 
-<dom-module id="cmacc-variable">
+<link rel="import" href="./cmacc-ast.html">
+
+<dom-module id="cmacc-link">
     <style>
         :host {
+            color: red;
             cursor: pointer;
+            text-decoration: underline;
         }
     </style>
 
-    <template><content></content><iron-signals on-iron-signal-cmacc-variable="setColor"></iron-signals><paper-tooltip>{{ref}}</paper-tooltip></template>
+    <template><content></content></template>
 </dom-module>
 
 
 <script>
     Polymer({
-        is: 'cmacc-variable',
+        is: 'cmacc-link',
 
         properties: {
             ref: String
         },
 
         attached: function () {
-            var parent = this.parentNode;
+
+            console.log('ast', this.$.ast);
 
             this.setColor = function (e, detail) {
 
                 if (detail === this.ref) {
-                    this.style.backgroundColor = "yellow";
+                    this.style.backgroundColor = "green";
                 }
 
                 if (!detail) {
@@ -37,15 +42,15 @@
             };
 
             this.addEventListener("mouseover", function (e) {
-                this.fire('iron-signal', {name: 'cmacc-variable', data: this.ref})
+                this.fire('iron-signal', {name: 'cmacc-link', data: this.ref})
             }, true);
 
             this.addEventListener("mouseout", function (e) {
-                this.fire('iron-signal', {name: 'cmacc-variable', data: null})
+                this.fire('iron-signal', {name: 'cmacc-link', data: null})
             }, true);
 
             this.addEventListener("click", function (e) {
-                    this.fire('cmacc-variable', {name: 'ref', data: this.ref})
+                this.fire('cmacc-link', {name: 'ref', data: this.ref})
             }, true);
 
         }

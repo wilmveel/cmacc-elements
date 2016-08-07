@@ -49,6 +49,14 @@
                 this.file = state.file;
             if (state.ast)
                 this.ast = state.ast;
+
+            document.addEventListener("cmacc-ast", function (e) {
+                console.log('new ast')
+                var ast = e.detail;
+                state.ast = ast;
+                this.ast = ast;
+                this.fire('iron-signal', {name: 'cmacc-ast', data: ast});
+            }.bind(this), true);
         },
 
         compose: function (file) {
@@ -59,8 +67,11 @@
             }.bind(this))
         },
 
-        parse: function (source) {
-            window.cmacc.compose(source, null, function (err, ast) {
+        parse: function (source, path) {
+            var options = {
+                path: path
+            };
+            window.cmacc.compose(source, null, options, function (err, ast) {
                 state.ast = ast;
                 this.ast = ast;
             }.bind(this))
@@ -68,12 +79,6 @@
 
         find: function (key) {
             return window.cmacc.helper.queryAst(this.ast, key);
-        },
-
-        change: function (key, value) {
-            var ast = window.cmacc.helper.queryAst(this.ast, key);
-            ast.val = value;
-            this.fire('iron-signal', {name: 'cmacc-ast', data: this.ast});
         },
 
         handleResponse: function () {

@@ -10,21 +10,12 @@
 <link rel="import" href="../paper-dialog/paper-dialog.html">
 <link rel="import" href="../paper-input/paper-textarea.html">
 <link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-toast/paper-toast.html">
 
-<link rel="import" href="./cmacc-link.html">
-
-<dom-module id="cmacc-source">
-    <style>
-        #source {
-            white-space: pre
-        }
-    </style>
+<dom-module id="cmacc-edit">
     <template>
-
-        <cmacc-ast id="ast" ast="{{ast}}"></cmacc-ast>
-
-        <div id="source"></div>
-
+        <paper-textarea value="{{source}}" on-input="save"></paper-textarea>
+        <paper-toast id="toast" ></paper-toast>
     </template>
 </dom-module>
 
@@ -32,7 +23,7 @@
 <script>
 
     Polymer({
-        is: 'cmacc-source',
+        is: 'cmacc-edit',
 
         properties: {
             ast: {
@@ -49,13 +40,26 @@
 
         refresh: function () {
             window.cmacc.serialize(this.ast, function (err, text) {
-                this.$.source.innerHTML = text;
-            }.bind(this), true)
+                this.source = text;
+            }.bind(this))
+
         },
 
         save: function () {
-            console.log('SAVE');
-            //this.$.ast.parse(this.source);
+            var options = {
+                path: '/doc/'
+            };
+            window.cmacc.compose(this.source, null, options, function (err, ast) {
+                if(err){
+                    this.$.toast.text = 'Error: ' + err;
+                    this.$.toast.open();
+                }else{
+                    this.$.toast.text = 'Compile Success';
+                    this.$.toast.open();
+                    this.fire('cmacc-ast', ast);
+                }
+            }.bind(this));
+
         }
 
     });
