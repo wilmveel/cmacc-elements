@@ -28,32 +28,49 @@
             width: 800px;
             height: 500px;
             overflow: auto;
+            padding: 0;
         }
+
+        paper-dialog > app-drawer-layout {
+            margin: 0;
+            padding: 0;
+        }
+
+        #content {
+            padding: 24px;
+        }
+
     </style>
 
     <template>
         <paper-dialog id="dialog">
-            <app-toolbar>
-                <div>{{variable.loc}}</div>
-            </app-toolbar>
-            <template is="dom-if" if="{{variable.variables}}">
-                <template is="dom-repeat" items="{{variable.variables}}">
-                    <div class="flex layout horizontal">
-                        <paper-input class="flex" label="{{item.key}}" value="{{item.val::input}}"
-                                     disabled="{{show(item)}}"
-                                     on-input="change"></paper-input>
-                        <paper-button on-tap="overwrite">Overwrite</paper-button>
-                    </div>
-                </template>
-            </template>
-            <template is="dom-if" if="{{!variable.variables}}">
-                <div class="flex layout horizontal">
-                    <paper-input class="flex" label="{{variable.key}}" value="{{variable.val}}" on-input="change"
-                                 disabled="{{show(item)}}"></paper-input>
-                    <paper-button on-tap="overwrite">Overwrite</paper-button>
+
+            <app-drawer-layout fullbleed>
+                <app-toolbar>
+                    <div>{{variable.loc}}</div>
+                </app-toolbar>
+                <div id="content">
+                    <template is="dom-if" if="{{variable.variables}}">
+                        <template is="dom-repeat" items="{{variable.variables}}">
+                            <div class="flex layout horizontal">
+                                <paper-input class="flex" label="{{item.key}}" value="{{item.val::input}}"
+                                             disabled="{{show(item)}}"
+                                             on-input="change"></paper-input>
+                                <paper-button on-tap="overwrite">Overwrite</paper-button>
+                            </div>
+                        </template>
+                    </template>
+                    <template is="dom-if" if="{{!variable.variables}}">
+                        <div class="flex layout horizontal">
+                            <paper-input class="flex" label="{{variable.key}}" value="{{variable.val}}"
+                                         on-input="change"
+                                         disabled="{{show(item)}}"></paper-input>
+                            <paper-button on-tap="overwrite">Overwrite</paper-button>
+                        </div>
+                    </template>
+                    <paper-button on-tap="save">Save</paper-button>
                 </div>
-            </template>
-            <paper-button on-tap="save">Save</paper-button>
+            </app-drawer-layout>
         </paper-dialog>
     </template>
 </dom-module>
