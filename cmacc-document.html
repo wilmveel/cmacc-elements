@@ -43,7 +43,10 @@
         refresh: function () {
             console.log('lalalal', this.ast);
             window.cmacc.render(this.ast, function (err, markdown) {
-                this.$.content.innerHTML = window.cmacc.marked(markdown);
+                if (markdown)
+                    this.$.content.innerHTML = window.cmacc.marked(markdown);
+                else
+                    this.$.content.innerHTML = '<i>empty document</i>';
             }.bind(this), true)
         },
 
