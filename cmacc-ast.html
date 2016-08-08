@@ -44,14 +44,12 @@
         },
 
         ready: function () {
-            console.log(state)
             if (state.file)
                 this.file = state.file;
             if (state.ast)
                 this.ast = state.ast;
 
             document.addEventListener("cmacc-ast", function (e) {
-                console.log('new ast')
                 var ast = e.detail;
                 state.ast = ast;
                 this.ast = ast;

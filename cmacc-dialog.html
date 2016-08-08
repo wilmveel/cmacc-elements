@@ -9,7 +9,7 @@
 
 <link rel="import" href="../paper-dialog/paper-dialog.html">
 <link rel="import" href="../paper-input/paper-input.html">
-<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-fab/paper-fab.html">
 
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 
@@ -18,6 +18,13 @@
     <style is="custom-style" include="iron-flex iron-flex-alignment"></style>
 
     <style>
+
+        paper-fab {
+            position: absolute;
+            top: 35px;
+            right: 20px;
+            --paper-fab-background: #FF6600
+        }
 
         app-toolbar {
             background-color: #4285f4;
@@ -48,9 +55,10 @@
             <app-drawer-layout fullbleed>
                 <app-toolbar>
                     <div>{{variable.loc}}</div>
+                    <paper-fab icon="save" on-tap="save"></paper-fab>
                 </app-toolbar>
                 <div id="content">
-                    <template is="dom-if" if="{{variable.variables}}">
+                    <template is="dom-if" if="{{showObject(variable)}}">
                         <template is="dom-repeat" items="{{variable.variables}}">
                             <div class="flex layout horizontal">
                                 <paper-input class="flex" label="{{item.key}}" value="{{item.val::input}}"
@@ -60,7 +68,17 @@
                             </div>
                         </template>
                     </template>
-                    <template is="dom-if" if="{{!variable.variables}}">
+                    <template is="dom-if" if="{{showReference(variable)}}">
+                        <template is="dom-repeat" items="{{variable.variables}}">
+                            <div class="flex layout horizontal">
+                                <paper-input class="flex" label="{{item.key}}" value="{{item.val::input}}"
+                                             disabled="{{show(item)}}"
+                                             on-input="change"></paper-input>
+                                <paper-button on-tap="overwrite">Overwrite</paper-button>
+                            </div>
+                        </template>
+                    </template>
+                    <template is="dom-if" if="{{showString(variable)}}">
                         <div class="flex layout horizontal">
                             <paper-input class="flex" label="{{variable.key}}" value="{{variable.val}}"
                                          on-input="change"
@@ -68,7 +86,6 @@
                             <paper-button on-tap="overwrite">Overwrite</paper-button>
                         </div>
                     </template>
-                    <paper-button on-tap="save">Save</paper-button>
                 </div>
             </app-drawer-layout>
         </paper-dialog>
@@ -108,10 +125,22 @@
             return false
         },
 
+        showObject: function (variable) {
+            return !!variable.variables && !variable.ref
+        },
+
+        showReference: function (variable) {
+            return !!variable.ref
+        },
+
+        showString: function (variable) {
+            console.log(!variable.variables && !variable.ref)
+            return !variable.variables && !variable.ref
+        },
+
         overwrite: function (e) {
             if (e.model.item) {
                 var variable = e.model.item;
-                console.log(e.model.index)
                 variable.over = !!!variable.over;
                 this.set('variable.variables.' + e.model.index + '.over', variable.over)
             }

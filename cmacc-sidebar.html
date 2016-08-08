@@ -40,12 +40,6 @@
 
         },
 
-        refresh: function (e, detail) {
-            console.log(detail)
-            //this.set('ast.variables', detail.variables)
-            //this.$.rep.render()
-        },
-
         list: function (ast) {
             return ast.variables
         },
@@ -56,7 +50,6 @@
 
         over: function (e) {
             var item = e.model.item;
-            console.log('over', item)
             this.fire('iron-signal', {name: 'cmacc-section', data: item.file})
         },
 

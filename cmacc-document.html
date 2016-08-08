@@ -35,13 +35,11 @@
 
         ready: function () {
             document.addEventListener('cmacc-changed', function (e) {
-                console.log('Render')
                 this.refresh()
             }.bind(this))
         },
 
         refresh: function () {
-            console.log('lalalal', this.ast);
             window.cmacc.render(this.ast, function (err, markdown) {
                 if (markdown)
                     this.$.content.innerHTML = window.cmacc.marked(markdown);
