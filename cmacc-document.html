@@ -13,9 +13,23 @@
 <link rel="import" href="../paper-toast/paper-toast.html">
 
 <dom-module id="cmacc-document">
+
+    <style>
+        #notloaded{
+            font-size: 24px;
+            color: lightgray;
+            text-align: center;
+            height: 250px;
+        }
+    </style>
     <template>
         <iron-signals on-iron-signal-cmacc-ast="refresh"></iron-signals>
-        <div id="content"></div>
+        <div id="content">
+            <template is="dom-if" if="!file">
+                <div id="notloaded">File not loaded</div>
+            </template>
+        </div>
+
     </template>
 </dom-module>
 
