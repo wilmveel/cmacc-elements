@@ -26,6 +26,9 @@
         is: 'cmacc-edit',
 
         properties: {
+            file: {
+                type: String
+            },
             ast: {
                 type: Object,
                 observer: 'refresh'
@@ -46,9 +49,13 @@
         },
 
         check: function () {
+
+            var path = cmacc.resolve(this.file, '.');
+
             var options = {
-                path: '/doc/'
+                path: path
             };
+
             window.cmacc.compose(this.source, null, options, function (err, ast) {
                 if(err){
                     this.$.toast.text = 'Error: ' + err;
@@ -62,9 +69,13 @@
         },
 
         save: function () {
+
+            var path = cmacc.resolve(this.file, '.');
+
             var options = {
-                path: '/doc/'
+                path: path
             };
+
             window.cmacc.compose(this.source, null, options, function (err, ast) {
                 if(err){
                     this.$.toast.text = 'Error: ' + err;
