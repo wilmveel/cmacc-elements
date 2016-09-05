@@ -71,11 +71,9 @@
 
         <app-drawer-layout fullbleed>
 
-            <template is="dom-if" if="{{sidebar}}">
-                <app-drawer swipe-open align="right">
-                    <cmacc-sidebar ast="{{ast}}"></cmacc-sidebar>
-                </app-drawer>
-            </template>
+            <app-drawer swipe-open align="right" hidden="{{!sidebar}}">
+                <cmacc-sidebar ast="{{ast}}"></cmacc-sidebar>
+            </app-drawer>
 
             <app-drawer id="left" swipe-open align="start">
                 <div style="height: 100%; overflow: auto;">
