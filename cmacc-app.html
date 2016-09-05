@@ -71,12 +71,16 @@
 
         <app-drawer-layout fullbleed>
 
-            <app-drawer swipe-open align="right">
-                <cmacc-sidebar ast="{{ast}}"></cmacc-sidebar>
-            </app-drawer>
+            <template is="dom-if" if="{{sidebar}}">
+                <app-drawer swipe-open align="right">
+                    <cmacc-sidebar ast="{{ast}}"></cmacc-sidebar>
+                </app-drawer>
+            </template>
 
             <app-drawer id="left" swipe-open align="start">
-                <cmacc-files files="{{files}}"></cmacc-files>
+                <div style="height: 100%; overflow: auto;">
+                    <cmacc-files files="{{files}}"></cmacc-files>
+                </div>
             </app-drawer>
 
             <app-toolbar>
@@ -139,6 +143,10 @@
             },
             base: {
                 type: String
+            },
+            sidebar: {
+                type: Boolean,
+                value: false
             }
         },
 
@@ -180,7 +188,7 @@
             document.getElementById('left').toggle();
         },
 
-        load: function(file){
+        load: function (file) {
             var url = new URL(file, this.base);
             this.file = url.href;
         },
