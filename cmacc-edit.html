@@ -15,7 +15,7 @@
 <dom-module id="cmacc-edit">
     <template>
         <paper-textarea value="{{source}}" on-input="save"></paper-textarea>
-        <paper-toast id="toast" ></paper-toast>
+        <paper-toast id="toast"></paper-toast>
     </template>
 </dom-module>
 
@@ -37,7 +37,8 @@
 
         refresh: function () {
             window.cmacc.serialize(this.ast, function (err, text) {
-                this.source = text;
+                if (!this.source)
+                    this.source = text;
             }.bind(this))
         },
 
@@ -50,10 +51,10 @@
             };
 
             window.cmacc.compose(this.source, null, options, function (err, ast) {
-                if(err){
+                if (err) {
                     this.$.toast.text = 'Error: ' + err;
                     this.$.toast.open();
-                }else{
+                } else {
                     this.$.toast.text = 'Compile Success';
                     this.$.toast.open();
                     this.fire('cmacc-ast', ast);
