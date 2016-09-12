@@ -14,7 +14,7 @@
 
 <dom-module id="cmacc-edit">
     <template>
-        <paper-textarea value="{{source}}" on-input="save"></paper-textarea>
+        <paper-textarea value="{{source}}" on-input="save" focused="{{focused}}" ></paper-textarea>
         <paper-toast id="toast"></paper-toast>
     </template>
 </dom-module>
@@ -35,9 +35,15 @@
             }
         },
 
+        attached: function () {
+            document.addEventListener('cmacc-changed', function (e) {
+                this.refresh()
+            }.bind(this))
+        },
+
         refresh: function () {
             window.cmacc.serialize(this.ast, function (err, text) {
-                if (!this.source)
+                if (!this.focused)
                     this.source = text;
             }.bind(this))
         },
