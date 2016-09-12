@@ -14,7 +14,7 @@
 
 <dom-module id="cmacc-edit">
     <template>
-        <paper-textarea value="{{source}}" on-input="check" on-blur="save"></paper-textarea>
+        <paper-textarea value="{{source}}" on-input="save"></paper-textarea>
         <paper-toast id="toast" ></paper-toast>
     </template>
 </dom-module>
@@ -35,37 +35,10 @@
             }
         },
 
-        attached: function () {
-            document.addEventListener('cmacc-changed', function (e) {
-                this.refresh()
-            }.bind(this))
-        },
-
         refresh: function () {
             window.cmacc.serialize(this.ast, function (err, text) {
                 this.source = text;
             }.bind(this))
-
-        },
-
-        check: function () {
-
-            var path = cmacc.resolve(this.file, '.');
-
-            var options = {
-                path: path
-            };
-
-            window.cmacc.compose(this.source, null, options, function (err, ast) {
-                if(err){
-                    this.$.toast.text = 'Error: ' + err;
-                    this.$.toast.open();
-                }else{
-                    this.$.toast.text = 'Compile Success';
-                    this.$.toast.open();
-                }
-            }.bind(this));
-
         },
 
         save: function () {
