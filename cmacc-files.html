@@ -37,6 +37,13 @@
         is: 'cmacc-files',
 
         properties: {
+            base: {
+                type: String
+            },
+            file: {
+                type: String,
+                notify: true
+            },
             files: {
                 type: Array,
                 observer: 'refresh'
@@ -67,7 +74,7 @@
             if (list.length > 0) {
                 this.set('pointer', pointer);
             } else {
-                this.fire('cmacc-select-file', this.path(pointer));
+                this.set("file", this.base + '/' +this.path(pointer));
             }
         },
 
@@ -91,7 +98,7 @@
         },
 
         path: function (pointer) {
-            return pointer.join('/');
+            return  pointer.join('/');
         }
 
     });

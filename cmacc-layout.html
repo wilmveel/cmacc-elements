@@ -26,7 +26,7 @@
 <link rel="import" href="./cmacc-sidebar.html">
 <link rel="import" href="./cmacc-dialog.html">
 
-<dom-module id="cmacc-app">
+<dom-module id="cmacc-layout">
 
     <style>
 
@@ -66,9 +66,6 @@
 
     <template>
 
-        <cmacc-ast id="ast" file="{{file}}" ast="{{ast}}"></cmacc-ast>
-        <!--cmacc-dialog id="dialog" ast="{{ast}}"></cmacc-dialog-->
-
         <app-drawer-layout fullbleed>
 
             <app-drawer swipe-open align="right" hidden="{{!sidebar}}">
@@ -77,52 +74,11 @@
 
             <app-drawer id="left" swipe-open align="start">
                 <div style="height: 100%; overflow: auto;">
-                    <cmacc-files id="files" base="{{base}}" file="{{file}}" files="{{files}}"></cmacc-files>
+                    <cmacc-files files="{{files}}" file="{{file}}"></cmacc-files>
                 </div>
             </app-drawer>
 
-            <app-toolbar>
-                <paper-icon-button icon="menu" onclick="document.getElementById('left').toggle();"></paper-icon-button>
-                <div main-title>Common Accord</div>
-            </app-toolbar>
-
-            <paper-tabs selected="{{page}}" fallback-selection="0">
-                <paper-tab>Document</paper-tab>
-                <paper-tab>Source</paper-tab>
-                <paper-tab>Edit</paper-tab>
-            </paper-tabs>
-
-            <div id="container">
-                <div id="wrapper">
-
-                    <div id="page">
-                        <template is="dom-if" if="{{err}}">
-                            <paper-material elevation="1" style="background-color: #FF6666;font-weight: bold;margin-bottom: 20px">
-                                {{err}}
-                            </paper-material>
-                        </template>
-
-                        <iron-pages selected="{{page}}">
-
-                            <paper-material elevation="1">
-                                <cmacc-document ast="{{ast}}"></cmacc-document>
-                            </paper-material>
-
-                            <paper-material elevation="1">
-                                <cmacc-source ast="{{ast}}"></cmacc-source>
-                            </paper-material>
-
-                            <paper-material elevation="1">
-                                <cmacc-edit ast="{{ast}}" file="{{file}}" err="{{err}}"></cmacc-edit>
-                            </paper-material>
-
-                        </iron-pages>
-                    </div>
-                </div>
-
-            </div>
-
-            <content></content>
+            <cmacc-app file="{{file}}" ast="{{ast}}"></cmacc-app>
 
         </app-drawer-layout>
     </template>
@@ -131,7 +87,7 @@
 
 <script>
     Polymer({
-        is: 'cmacc-app',
+        is: 'cmacc-layout',
 
         properties: {
             file: {
@@ -147,14 +103,12 @@
             sidebar: {
                 type: Boolean,
                 value: false
-            },
-            err:{
-                type: String,
-                notify:true
             }
         },
 
         ready: function () {
+
+            this.page = 0;
 
             this.addEventListener("cmacc-variable", function (e) {
                 var ref = e.detail.data;
@@ -162,7 +116,7 @@
                 this.$.dialog.open(variable)
             }.bind(this), true);
 
-            this.$.files.addEventListener("file", function (e) {
+            this.addEventListener("cmacc-select-file", function (e) {
                 var file = e.detail;
                 this.load(file);
                 this.$.left.toggle()
@@ -187,6 +141,11 @@
         go: function (e) {
             this.load(e.model.item);
             document.getElementById('left').toggle();
+        },
+
+        load: function (file) {
+            var url = new URL(file, this.base);
+            this.file = url.href;
         },
 
         getDoc: function () {

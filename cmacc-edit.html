@@ -14,7 +14,7 @@
 
 <dom-module id="cmacc-edit">
     <template>
-        <paper-textarea value="{{source}}" on-input="save" focused="{{focused}}" ></paper-textarea>
+        <paper-textarea value="{{source}}" on-input="compile" focused="{{focused}}" ></paper-textarea>
         <paper-toast id="toast"></paper-toast>
     </template>
 </dom-module>
@@ -31,24 +31,21 @@
             },
             ast: {
                 type: Object,
+                notify:true,
                 observer: 'refresh'
+            },
+            err:{
+                type: String,
+                notify:true
             }
         },
 
-        attached: function () {
-            document.addEventListener('cmacc-changed', function (e) {
-                this.refresh()
-            }.bind(this))
-        },
-
         refresh: function () {
-            window.cmacc.serialize(this.ast, function (err, text) {
-                if (!this.focused)
-                    this.source = text;
-            }.bind(this))
+            if(!this.focused)
+                this.source = this.ast.src;
         },
 
-        save: function () {
+        compile: function () {
 
             var path = cmacc.resolve(this.file, '.');
 
@@ -60,10 +57,13 @@
                 if (err) {
                     this.$.toast.text = 'Error: ' + err;
                     this.$.toast.open();
+                    this.set('err', err);
+                    this.set('ast', ast);
                 } else {
                     this.$.toast.text = 'Compile Success';
                     this.$.toast.open();
-                    this.fire('cmacc-ast', ast);
+                    this.set('err', null);
+                    this.set('ast', ast);
                 }
             }.bind(this));
 
