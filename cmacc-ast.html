@@ -21,6 +21,10 @@
             ast: {
                 type: Object,
                 notify: true
+            },
+            err: {
+                type: Object,
+                notify: true
             }
         },
 
@@ -28,7 +32,7 @@
             window.cmacc.compose(file, null, function (err, ast) {
                 console.log('AST-AST', ast)
                 if(err){
-                    this.ast = null;
+                    this.err = err;
                 }else{
                     this.ast = ast;
                 }
