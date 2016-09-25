@@ -23,27 +23,24 @@
                 notify: true
             },
             err: {
-                type: Object,
+                type: String,
                 notify: true
             }
         },
 
         compose: function (file) {
             window.cmacc.compose(file, null, function (err, ast) {
-                console.log('AST-AST', ast)
-                if(err){
-                    this.err = err;
-                }else{
-                    this.ast = ast;
-                }
+                console.log('AST-AST', err, ast);
+                this.set('ast', ast);
+                this.set('err', err);
 
             }.bind(this))
         },
 
         serialize: function () {
-            return new Promise(function(resolve, reject) {
+            return new Promise(function (resolve, reject) {
                 window.cmacc.serialize(this.ast, function (err, source) {
-                    if(err) return reject(err);
+                    if (err) return reject(err);
                     resolve(source)
                 }.bind(this))
             }.bind(this))

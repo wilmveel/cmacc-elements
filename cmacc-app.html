@@ -66,7 +66,7 @@
 
     <template>
 
-        <cmacc-ast id="ast" file="{{file}}" ast="{{ast}}"></cmacc-ast>
+        <cmacc-ast id="ast" file="{{file}}" ast="{{ast}}" err="{{err}}"></cmacc-ast>
         <!--cmacc-dialog id="dialog" ast="{{ast}}"></cmacc-dialog-->
 
         <app-drawer-layout fullbleed>
@@ -147,6 +147,10 @@
             sidebar: {
                 type: Boolean,
                 value: false
+            },
+            ast:{
+                type: Object,
+                notify:true
             },
             err:{
                 type: String,
