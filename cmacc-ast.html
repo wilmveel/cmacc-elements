@@ -21,20 +21,13 @@
             ast: {
                 type: Object,
                 notify: true
-            },
-            err: {
-                type: String,
-                notify: true
             }
         },
 
         compose: function (file) {
-            window.cmacc.compose(file, null, function (err, ast) {
-                console.log('AST-AST', err, ast);
-                this.set('ast', ast);
-                this.set('err', err);
-
-            }.bind(this))
+            var ast = window.cmacc.compile(file);
+            console.log('AST', ast);
+            this.set('ast', ast);
         },
 
         serialize: function () {

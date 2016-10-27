@@ -66,8 +66,7 @@
 
     <template>
 
-        <cmacc-ast id="ast" file="{{file}}" ast="{{ast}}" err="{{err}}"></cmacc-ast>
-        <!--cmacc-dialog id="dialog" ast="{{ast}}"></cmacc-dialog-->
+        <cmacc-ast id="ast" file="{{file}}" ast="{{ast}}"></cmacc-ast>
 
         <app-drawer-layout fullbleed>
 
@@ -86,10 +85,10 @@
                 <div main-title>Common Accord</div>
             </app-toolbar>
 
-            <paper-tabs selected="{{page}}" fallback-selection="0">
-                <paper-tab>Document</paper-tab>
-                <paper-tab>Source</paper-tab>
-                <paper-tab>Edit</paper-tab>
+            <paper-tabs selected="{{page}}" fallback-selection="doc" attr-for-selected="key">
+                <paper-tab key="doc">Document</paper-tab>
+                <!--<paper-tab key="src">Source</paper-tab>-->
+                <paper-tab key="edit">Edit</paper-tab>
             </paper-tabs>
 
             <div id="container">
@@ -102,18 +101,18 @@
                             </paper-material>
                         </template>
 
-                        <iron-pages selected="{{page}}">
+                        <iron-pages selected="{{page}}" attr-for-selected="key">
 
-                            <paper-material elevation="1">
+                            <paper-material elevation="1" key="doc">
                                 <cmacc-document ast="{{ast}}"></cmacc-document>
                             </paper-material>
 
-                            <paper-material elevation="1">
+                            <paper-material elevation="1" key="src">
                                 <cmacc-source ast="{{ast}}"></cmacc-source>
                             </paper-material>
 
-                            <paper-material elevation="1">
-                                <cmacc-edit ast="{{ast}}" file="{{file}}" err="{{err}}"></cmacc-edit>
+                            <paper-material elevation="1" key="edit">
+                                <cmacc-edit file="{{file}}" src="{{src}}"></cmacc-edit>
                             </paper-material>
 
                         </iron-pages>
@@ -136,7 +135,8 @@
         properties: {
             file: {
                 type: String,
-                notify: true
+                notify: true,
+                observer: '_fileChange'
             },
             files: {
                 type: Array
@@ -152,10 +152,14 @@
                 type: Object,
                 notify:true
             },
-            err:{
+            src:{
                 type: String,
                 notify:true
             }
+        },
+
+        _fileChange: function(){
+            this.$.left.toggle();
         },
 
         ready: function () {
@@ -164,12 +168,6 @@
                 var ref = e.detail.data;
                 var variable = cmacc.helper.queryAst(this.ast, ref);
                 this.$.dialog.open(variable)
-            }.bind(this), true);
-
-            this.$.files.addEventListener("file", function (e) {
-                var file = e.detail;
-                this.load(file);
-                this.$.left.toggle()
             }.bind(this), true);
 
             this.files = []

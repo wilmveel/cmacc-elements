@@ -15,7 +15,7 @@
 <dom-module id="cmacc-document">
 
     <style>
-        #notloaded{
+        #notloaded {
             font-size: 24px;
             color: lightgray;
             text-align: center;
@@ -50,12 +50,9 @@
         },
 
         refresh: function () {
-            window.cmacc.render(this.ast, function (err, markdown) {
-                if (markdown)
-                    this.$.content.innerHTML = window.cmacc.marked(markdown);
-                else
-                    this.$.content.innerHTML = '<i>empty document</i>';
-            }.bind(this), true)
+            var doc = window.cmacc.resolve(this.ast);
+            var md = window.cmacc.marked(doc);
+            this.$.content.innerHTML = md;
         }
     });
 </script>
