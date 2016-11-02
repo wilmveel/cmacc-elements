@@ -1,9 +1,22 @@
 <!-- Imports polymer -->
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../iron-signals/iron-signals.html">
-<link rel="import" href="../paper-tooltip/paper-tooltip.html">
+
+<link rel="import" href="../iron-ajax/iron-ajax.html">
 
 <dom-module id="cmacc-ast">
+
+    <template>
+
+        <iron-ajax
+                id="ajax"
+                url="{{file}}"
+                handle-as="text"
+                last-response="{{src}}">
+        </iron-ajax>
+
+        <paper-toast id="toast"></paper-toast>
+
+    </template>
 
 </dom-module>
 
@@ -16,27 +29,48 @@
         properties: {
             file: {
                 type: String,
-                observer: 'compose'
+                observer: '_load'
             },
             ast: {
+                type: Object,
+                notify: true
+            },
+            src: {
+                type: String,
+                observer: '_compile',
+                notify: true
+            },
+            err: {
                 type: Object,
                 notify: true
             }
         },
 
-        compose: function (file) {
-            var ast = window.cmacc.compile(file);
-            console.log('AST', ast);
-            this.set('ast', ast);
+        _load: function () {
+            this.$.ajax.generateRequest();
         },
 
-        serialize: function () {
-            return new Promise(function (resolve, reject) {
-                window.cmacc.serialize(this.ast, function (err, source) {
-                    if (err) return reject(err);
-                    resolve(source)
-                }.bind(this))
-            }.bind(this))
+        _compile: function () {
+            console.log('compile');
+
+            var path = this.file.split('/').slice(0, -1).join('/');
+
+            var options = {
+                path: path
+            };
+
+            try{
+                var ast = window.cmacc.compile(this.src, options);
+                this.set('ast', ast);
+                this.set('err', null);
+                this.$.toast.text = 'Compile Success';
+            } catch(e){
+                this.set('ast', null);
+                this.set('err', e);
+                this.$.toast.text = 'Error: ' + e + ': ' + e.file;
+            }
+
+            this.$.toast.open();
 
         },
 

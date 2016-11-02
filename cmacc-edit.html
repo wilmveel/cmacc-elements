@@ -17,16 +17,7 @@
 <dom-module id="cmacc-edit">
     <template>
 
-        <iron-ajax
-                id="ajax"
-                url="{{file}}"
-                handle-as="text"
-                last-response="{{src}}">
-        </iron-ajax>
-
-        <paper-textarea on-input="compile" value="{{src}}" focused="{{focused}}"></paper-textarea>
-
-        <paper-toast id="toast"></paper-toast>
+        <paper-textarea value="{{src}}" focused="{{focused}}"></paper-textarea>
 
     </template>
 </dom-module>
@@ -40,43 +31,12 @@
 
         properties: {
             file: {
-                type: String,
-                observer: '_fileChange'
+                type: String
             },
             src: {
                 type: String,
                 notify: true
             }
-        },
-
-        ready: function(){
-            document.addEventListener('cmacc-save', function(){
-                console.log('SAVESAVE');
-            })
-        },
-
-        _fileChange: function(){
-            this.$.ajax.method = 'GET'
-            this.$.ajax.generateRequest();
-        },
-
-        compile: function () {
-
-            var path = this.file.split('/').slice(0, -1).join('/');
-
-            var options = {
-                path: path
-            };
-
-            try {
-                window.cmacc.compile(this.source, options);
-                this.$.toast.text = 'Compile Success';
-                this.$.toast.open();
-            } catch (e) {
-                this.$.toast.text = 'Error: ' + e + ': ' + e.file;
-                this.$.toast.open();
-            }
-
         }
 
     });

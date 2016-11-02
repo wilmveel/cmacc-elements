@@ -66,12 +66,12 @@
 
     <template>
 
-        <cmacc-ast id="ast" file="{{file}}" ast="{{ast}}"></cmacc-ast>
+        <cmacc-ast id="ast" file="{{file}}" ast="{{ast}}" src="{{src}}"></cmacc-ast>
 
         <app-drawer-layout fullbleed>
 
             <app-drawer swipe-open align="right" hidden="{{!sidebar}}">
-                <cmacc-sidebar ast="{{ast}}"></cmacc-sidebar>
+               <!-- <cmacc-sidebar ast="{{ast}}"></cmacc-sidebar>-->
             </app-drawer>
 
             <app-drawer id="left" swipe-open align="start">
@@ -104,7 +104,7 @@
                         <iron-pages selected="{{page}}" attr-for-selected="key">
 
                             <paper-material elevation="1" key="doc">
-                                <cmacc-document ast="{{ast}}"></cmacc-document>
+                                <cmacc-document ast="{{ast}}" err="{{err}}"></cmacc-document>
                             </paper-material>
 
                             <paper-material elevation="1" key="src">
@@ -163,15 +163,7 @@
         },
 
         ready: function () {
-
-            this.addEventListener("cmacc-variable", function (e) {
-                var ref = e.detail.data;
-                var variable = cmacc.helper.queryAst(this.ast, ref);
-                this.$.dialog.open(variable)
-            }.bind(this), true);
-
             this.files = []
-
         },
 
         attached: function () {

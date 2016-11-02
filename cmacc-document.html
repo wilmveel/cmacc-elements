@@ -46,13 +46,23 @@
             ast: {
                 type: Object,
                 observer: 'refresh'
+            },
+            err: {
+                type: Object,
+                observer: 'refresh'
             }
         },
 
-        refresh: function () {
-            var doc = window.cmacc.resolve(this.ast);
-            var md = window.cmacc.marked(doc);
-            this.$.content.innerHTML = md;
+        refresh: function (ast) {
+            console.log('refresh');
+            if(ast){
+                var doc = window.cmacc.resolve(ast)
+                var md = window.cmacc.marked(doc)
+                this.$.content.innerHTML = md;
+            }else{
+                this.$.content.innerHTML = 'COMPILE ERROR: ' + this.err;
+            }
+
         }
     });
 </script>
